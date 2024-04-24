@@ -1,0 +1,69 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "workspace": {
+            "type": "String"
+        }
+    },
+    "resources": [
+        {
+            "id": "[concat(resourceId('Microsoft.OperationalInsights/workspaces/providers', parameters('workspace'), 'Microsoft.SecurityInsights'),'/alertRules/replaceme')]",
+            "name": "[concat(parameters('workspace'),'/Microsoft.SecurityInsights/replaceme')]",
+            "type": "Microsoft.OperationalInsights/workspaces/providers/alertRules",
+            "kind": "Scheduled",
+            "apiVersion": "2023-12-01-preview",
+            "properties": {
+                "displayName": "Epic Sensitive Data Action High Volume",
+                "description": "Looks for high volume of sensitive data actions within Epic including break the glass and actions on masked data",
+                "severity": "Medium",
+                "enabled": true,
+                "query": "let overallAvg = toscalar(Syslog \n| where TimeGenerated > ago(7d)\n| where type_CF == \"Epic\"\n| where desc_CF == \"MASKED_DATA_DISPLAY\" or desc_CF == \"MASKED_DATA_PRINTING\" or desc_CF == \"AC_BREAK_THE_GLASS_ACCESS\" or desc_CF == \"AC_BREAK_THE_GLASS_FAILED_ACCESS\" or desc_CF == \"AC_BREAK_THE_GLASS_INAPPROPRIATE_ATTEMPT\"\n| summarize overallAvg = count());\nSyslog\n| where TimeGenerated > ago(7d)\n| where type_CF == \"Epic\"\n| where desc_CF == \"MASKED_DATA_DISPLAY\" or desc_CF == \"MASKED_DATA_PRINTING\" or desc_CF == \"AC_BREAK_THE_GLASS_ACCESS\" or desc_CF == \"AC_BREAK_THE_GLASS_FAILED_ACCESS\" or desc_CF == \"AC_BREAK_THE_GLASS_INAPPROPRIATE_ATTEMPT\"\n| summarize CountOfLoginAttempts = count() by usrName_CF\n| summarize AvgLoginAttemptsPerUser = avg(CountOfLoginAttempts) by usrName_CF\n| extend percentage = round(AvgLoginAttemptsPerUser/overallAvg,8)*100\n| where percentage > 1.0;",
+                "queryFrequency": "PT4H",
+                "queryPeriod": "PT4H",
+                "triggerOperator": "GreaterThan",
+                "triggerThreshold": 0,
+                "suppressionDuration": "PT5H",
+                "suppressionEnabled": false,
+                "startTimeUtc": null,
+                "tactics": [
+                    "Exfiltration",
+                    "Impact"
+                ],
+                "techniques": [],
+                "alertRuleTemplateName": null,
+                "incidentConfiguration": {
+                    "createIncident": true,
+                    "groupingConfiguration": {
+                        "enabled": false,
+                        "reopenClosedIncident": false,
+                        "lookbackDuration": "PT5H",
+                        "matchingMethod": "AllEntities",
+                        "groupByEntities": [],
+                        "groupByAlertDetails": [],
+                        "groupByCustomDetails": []
+                    }
+                },
+                "eventGroupingSettings": {
+                    "aggregationKind": "AlertPerResult"
+                },
+                "alertDetailsOverride": null,
+                "customDetails": null,
+                "entityMappings": [
+                    {
+                        "entityType": "Account",
+                        "fieldMappings": [
+                            {
+                                "identifier": "Name",
+                                "columnName": "usrName_CF"
+                            }
+                        ]
+                    }
+                ],
+                "sentinelEntitiesMappings": null,
+                "templateVersion": null,
+                "subTechniques": []
+            }
+        }
+    ]
+}

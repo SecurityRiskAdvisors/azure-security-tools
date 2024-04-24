@@ -1,0 +1,82 @@
+{
+  "version": "Notebook/1.0",
+  "items": [
+    {
+      "type": 1,
+      "content": {
+        "json": "## Epic User Activity Lookup\n---\n"
+      },
+      "name": "text - 2"
+    },
+    {
+      "type": 9,
+      "content": {
+        "version": "KqlParameterItem/1.0",
+        "parameters": [
+          {
+            "id": "4ac74c41-0031-4622-927a-d2e58a65ef24",
+            "version": "KqlParameterItem/1.0",
+            "name": "IP_Address",
+            "label": "IP Address",
+            "type": 1,
+            "timeContext": {
+              "durationMs": 86400000
+            },
+            "value": "103.164.15.248"
+          },
+          {
+            "id": "ecde60c6-593f-43e2-bbfc-eb8298034614",
+            "version": "KqlParameterItem/1.0",
+            "name": "User_Name",
+            "label": "User Name",
+            "type": 1,
+            "timeContext": {
+              "durationMs": 86400000
+            },
+            "value": "CEDICOM"
+          }
+        ],
+        "style": "pills",
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces"
+      },
+      "name": "parameters - 1"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "Syslog\n| where desc_CF == \"MASKED_DATA_DISPLAY\" or desc_CF == \"MASKED_DATA_PRINTING\" or desc_CF == \"AC_BREAK_THE_GLASS_ACCESS\" or desc_CF == \"AC_BREAK_THE_GLASS_FAILED_ACCESS\" or desc_CF == \"AC_BREAK_THE_GLASS_INAPPROPRIATE_ATTEMPT\"\n| where usrName_CF startswith \"{User_Name}\"\n| project usrName_CF, name_CF, desc_CF, resource_CF, action_CF,  shost_CF, devTime_CF, flag_CF, sev_CF, proto_CF, dep_CF\n",
+        "size": 0,
+        "title": "Epic Activity",
+        "timeContext": {
+          "durationMs": 86400000
+        },
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces"
+      },
+      "customWidth": "50",
+      "name": "query - 2"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "Syslog\n| where desc_CF == \"WPSEC_LOGIN_FAIL\" or desc_CF == \"WPSEC_LOGIN_SUCCESS\"\n| where ip_CF startswith \"{IP_Address}\"\n| project ip_CF, usrName_CF, name_CF, desc_CF, resource_CF, action_CF,  shost_CF, devTime_CF, flag_CF, sev_CF, proto_CF, dep_CF\n",
+        "size": 0,
+        "timeContext": {
+          "durationMs": 86400000
+        },
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces"
+      },
+      "customWidth": "50",
+      "name": "query - 3"
+    }
+  ],
+  "fallbackResourceIds": [
+    "[concat('/subscriptions/', subscription().subscriptionId, '/resourcegroups/', resourceGroup().id, '/providers/microsoft.operationalinsights/workspaces/replaceme')]"
+  ],
+  "fromTemplateId": "sentinel-UserWorkbook",
+  "$schema": "https://github.com/Microsoft/Application-Insights-Workbooks/blob/master/schema/workbook.json"
+}

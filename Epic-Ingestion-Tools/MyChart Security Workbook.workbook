@@ -1,0 +1,74 @@
+{
+  "version": "Notebook/1.0",
+  "items": [
+    {
+      "type": 1,
+      "content": {
+        "json": "## MyChart Security Dashboard\n---\n\nBy Security Risk Advisors"
+      },
+      "name": "text - 2"
+    },
+    {
+      "type": 12,
+      "content": {
+        "version": "NotebookGroup/1.0",
+        "groupType": "editable",
+        "title": "MyChart Login Trends",
+        "items": [
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "Syslog\n| where TimeGenerated >= ago(30d)\n| where desc_CF == \"WPSEC_LOGIN_FAIL\"\n| summarize Failed_Logins_by_Day=count() by bin(TimeGenerated, 15m)\n| render barchart;",
+              "size": 0,
+              "title": "MyChart Failed Login Trending",
+              "color": "red",
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces",
+              "chartSettings": {
+                "showLegend": true,
+                "xSettings": {
+                  "label": ""
+                },
+                "ySettings": {
+                  "label": "MyChart Failed Logins By Day"
+                }
+              }
+            },
+            "customWidth": "50",
+            "name": "query - 2"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "Syslog\n| where TimeGenerated >= ago(30d)\n| where desc_CF == \"WPSEC_LOGIN_SUCCESS\"\n| summarize Failed_Logins_by_Day=count() by bin(TimeGenerated, 15m)\n| render barchart;",
+              "size": 0,
+              "title": "MyChart Failed Login Trending",
+              "color": "greenDark",
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces",
+              "chartSettings": {
+                "showLegend": true,
+                "xSettings": {
+                  "label": ""
+                },
+                "ySettings": {
+                  "label": "MyChart Failed Logins By Day"
+                }
+              }
+            },
+            "customWidth": "50",
+            "name": "query - 2 - Copy"
+          }
+        ]
+      },
+      "name": "group - 2"
+    }
+  ],
+  "fallbackResourceIds": [
+    "[concat('/subscriptions/', subscription().subscriptionId, '/resourcegroups/', resourceGroup().id, '/providers/microsoft.operationalinsights/workspaces/replaceme')]"
+  ],
+  "fromTemplateId": "sentinel-UserWorkbook",
+  "$schema": "https://github.com/Microsoft/Application-Insights-Workbooks/blob/master/schema/workbook.json"
+}
