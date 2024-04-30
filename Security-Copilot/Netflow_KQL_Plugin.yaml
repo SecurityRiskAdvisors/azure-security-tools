@@ -1,0 +1,35 @@
+#Filename: Netflow_KQL_Plugin.yaml
+#Date: 4/30/2024
+#By: Mike.Pinch@sra.io
+Descriptor:
+  Name: Azure Data Explorer Netflow Enrichment for Security Copilot by Security Risk Advisors
+  DisplayName: ADX Netflow Enrichment by SRA
+  Description: Skills that enrich analysis by looking at netflow data stored in Azure Data Explorer
+  #Be very thoughtful and descriptive of your description for model, as Copilot for Security uses this description to determine when this plugin is needed or not!
+  DescriptionForModel: This plugin will look at netflow data stored in Azure Data Explorer Data Lake, using the IP address of a host and return a summary of its internal network traffic by way of netflow analysis, grouped by destination IP address and port pairs, with total count of connections and total packet transfer within 30 minutes before and after the supplied timestamp
+
+SkillGroups:
+  - Format: KQL
+    Skills:
+      - Name: Azure Data Explorer Netflow Enrichment for Security Copilot by Security Risk Advisors
+        DisplayName: ADX Netflow Enrichment by SRA
+        Description: This plugin will look at netflow data stored in Azure Data Explorer Data Lake, using the IP address of a host and return a summary of its internal network traffic by way of netflow analysis, grouped by destination IP address and port pairs, with total count of connections and total packet transfer within 30 minutes before and after the supplied timestamp
+        Inputs:
+          - Name: ipaddress
+            Description: The source IP Address to investigate
+            Required: true
+          - Name: eventtime
+            Description: The datetime of the incident being investigated
+            Required: true
+        Settings:
+          Target: Kusto
+          # The Kusto cluster URL.
+          Cluster: https://yourclustername.eastus.kusto.windows.net/
+          # The Kusto database name.
+          Database: yourdbname
+          # Query here is based upon our Netflow table schema conventions
+          Template: |-
+            Netflow 
+            |  where IPV4_SRC_ADDR == '{{ipaddress}}' and todatetime(timestamp) > datetime_add('minute', -30, datetime('{{eventtime}}')) and todatetime(timestamp) < datetime_add('minute', 30, datetime('{{eventtime}}'))
+            | summarize total_bytes=sum(IN_BYTES), connections=count(L4_DST_PORT) by IPV4_DST_ADDR, L4_DST_PORT
+            | project IPV4_DST_ADDR, L4_DST_PORT, connections, total_bytes
