@@ -1,0 +1,398 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "workflows_SOC_Daily_Summary_AI_name": {
+            "defaultValue": "SOC-Daily-Summary-AI",
+            "type": "String"
+        },
+        "connections_azuremonitorlogs_2_externalid": {
+            "defaultValue": "[concat('/subscriptions/', subscription().subscriptionId, '/resourceGroups/, 'replacemewithresourcegroup', '/providers/Microsoft.Web/connections/azuremonitorlogs-1')]",
+            "type": "String"
+        },
+        "connections_office365_7_externalid": {
+            "defaultValue": "[concat('/subscriptions/', subscription().subscriptionId, '/resourceGroups/', 'replacemewithresourcegroup', '/providers/Microsoft.Web/connections/office365-1')]",
+            "type": "String"
+        }
+    },
+    "variables": {},
+    "resources": [
+        {
+            "type": "Microsoft.Logic/workflows",
+            "apiVersion": "2017-07-01",
+            "name": "[parameters('workflows_SOC_Daily_Summary_AI_name')]",
+            "location": "eastus",
+            "properties": {
+                "state": "Enabled",
+                "definition": {
+                    "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+                    "contentVersion": "1.0.0.0",
+                    "parameters": {
+                        "$connections": {
+                            "defaultValue": {},
+                            "type": "Object"
+                        },
+                        "api-key": {
+                            "defaultValue": "replacemewithapikey",
+                            "type": "String"
+                        }
+                    },
+                    "triggers": {
+                        "Recurrence": {
+                            "recurrence": {
+                                "frequency": "Day",
+                                "interval": 1,
+                                "schedule": {
+                                    "hours": [
+                                        "6"
+                                    ],
+                                    "minutes": [
+                                        0
+                                    ]
+                                },
+                                "timeZone": "Eastern Standard Time"
+                            },
+                            "evaluatedRecurrence": {
+                                "frequency": "Day",
+                                "interval": 1,
+                                "schedule": {
+                                    "hours": [
+                                        "6"
+                                    ],
+                                    "minutes": [
+                                        0
+                                    ]
+                                },
+                                "timeZone": "Eastern Standard Time"
+                            },
+                            "type": "Recurrence"
+                        }
+                    },
+                    "actions": {
+                        "HTTP": {
+                            "runAfter": {
+                                "UsageOverall": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "Http",
+                            "inputs": {
+                                "body": {
+                                    "messages": [
+                                        {
+                                            "content": "Please summarize the following data from the past 24 hours into a Security Operations Center Summary of activity for Director and CISO readers.  Format your response in HTML suitable for readability in an email.  Include an analysis of the trends noted within the detailed breakdown of incidents, and highlight and remediations and recommendations as the final section of the response. Within the security operations center yesterday, there were the following number of incidents identified, broken down by severity: \n@{body('Severity')?['value']}\n\n\nThe total collection of incidents were broken down by incident type with the total incident count of each as listed here: :\n@{body('Provider')?['value']}\n\nin the past 24 hours, the SOC ingested and analyzed the following total pieces of threat intelligence based one each source.  When referencing this table, please rename 'SecurityGraph' row to 'SRA TIGR Intel':\n@{body('ThreatIntel')?['value']}\n\nThe following is a detailed breakdown of all the incidents:\n@{body('IncidentDetails')?['value']}\n\n.  Overall, Azure Sentinel ingested the following total GB yesterday:@{body('UsageOverall')?['value']}\n\n.  Azure Sentinel ingestion GB yesterday is broken down by log source here: @{body('UsageBySource')?['value']}  ",
+                                            "role": "user"
+                                        }
+                                    ],
+                                    "temperature": 0.5
+                                },
+                                "headers": {
+                                    "Content-Type": "application/json",
+                                    "api-key": "@parameters('api-key')"
+                                },
+                                "method": "POST",
+                                "uri": "replacemewithOpenAIEndpointURL"
+                            }
+                        },
+                        "IncidentDetails": {
+                            "runAfter": {},
+                            "type": "ApiConnection",
+                            "inputs": {
+                                "body": {
+                                    "query": "SecurityIncident \n| where LastActivityTime >= startofday(ago(1d)) and LastActivityTime < startofday(now())\n| where Severity != \"Informational\"\n| summarize arg_max(TimeGenerated, *) by IncidentNumber\n| project Title, Description, Severity, Status, IncidentNumber, ProviderName, Classification, ClassificationComment, ClassificationReason, Comments",
+                                    "timerange": {
+                                        "relativeTimeRange": "Last 3 days"
+                                    },
+                                    "timerangetype": "2"
+                                },
+                                "host": {
+                                    "connection": {
+                                        "name": "@parameters('$connections')['azuremonitorlogs']['connectionId']"
+                                    }
+                                },
+                                "method": "post",
+                                "path": "/queryDataV2",
+                                "queries": {
+                                    "resourcegroups": "replacemewithresourcegroup",
+                                    "resourcename": "replacemewithsentinelname",
+                                    "resourcetype": "Log Analytics Workspace",
+                                    "subscriptions": "[subscription().subscriptionId]"
+                                }
+                            }
+                        },
+                        "Initialize_variable": {
+                            "runAfter": {
+                                "Parse_JSON": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "InitializeVariable",
+                            "inputs": {
+                                "variables": [
+                                    {
+                                        "name": "emailBody",
+                                        "type": "string",
+                                        "value": "@{body('Parse_JSON')?['choices']?[0]?['message']?['content']}"
+                                    }
+                                ]
+                            }
+                        },
+                        "Parse_JSON": {
+                            "runAfter": {
+                                "HTTP": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "ParseJson",
+                            "inputs": {
+                                "content": "@body('HTTP')",
+                                "schema": {
+                                    "properties": {
+                                        "choices": {
+                                            "items": {
+                                                "properties": {
+                                                    "finish_reason": {
+                                                        "type": "string"
+                                                    },
+                                                    "index": {
+                                                        "type": "integer"
+                                                    },
+                                                    "message": {
+                                                        "properties": {
+                                                            "content": {
+                                                                "type": "string"
+                                                            },
+                                                            "role": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "required": [
+                                                    "index",
+                                                    "finish_reason",
+                                                    "message"
+                                                ],
+                                                "type": "object"
+                                            },
+                                            "type": "array"
+                                        },
+                                        "created": {
+                                            "type": "integer"
+                                        },
+                                        "id": {
+                                            "type": "string"
+                                        },
+                                        "model": {
+                                            "type": "string"
+                                        },
+                                        "object": {
+                                            "type": "string"
+                                        },
+                                        "usage": {
+                                            "properties": {
+                                                "completion_tokens": {
+                                                    "type": "integer"
+                                                },
+                                                "prompt_tokens": {
+                                                    "type": "integer"
+                                                },
+                                                "total_tokens": {
+                                                    "type": "integer"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        },
+                        "Provider": {
+                            "runAfter": {
+                                "Severity": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "ApiConnection",
+                            "inputs": {
+                                "body": {
+                                    "query": "SecurityIncident\n| where LastActivityTime >= startofday(ago(1d)) and LastActivityTime < startofday(now())\n| summarize arg_max(TimeGenerated, *) by IncidentNumber\n| summarize count() by Title\n| order by count_ desc ",
+                                    "timerange": {
+                                        "relativeTimeRange": "Last 3 days"
+                                    },
+                                    "timerangetype": "2"
+                                },
+                                "host": {
+                                    "connection": {
+                                        "name": "@parameters('$connections')['azuremonitorlogs']['connectionId']"
+                                    }
+                                },
+                                "method": "post",
+                                "path": "/queryDataV2",
+                                "queries": {
+                                    "resourcegroups": "replacemewithresourcegroup",
+                                    "resourcename": "replacemewithsentinelname",
+                                    "resourcetype": "Log Analytics Workspace",
+                                    "subscriptions": "[subscription().subscriptionId]"
+                                }
+                            }
+                        },
+                        "Send_an_email_(V2)": {
+                            "runAfter": {
+                                "Initialize_variable": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "ApiConnection",
+                            "inputs": {
+                                "body": {
+                                    "Body": "<p>@{replace(replace(variables('emailBody'), '```html', ''), '```', '')}</p>",
+                                    "Importance": "Normal",
+                                    "Subject": "Daily SOC Summary",
+                                    "To": "replacemewithRecipients"
+                                },
+                                "host": {
+                                    "connection": {
+                                        "name": "@parameters('$connections')['office365_1']['connectionId']"
+                                    }
+                                },
+                                "method": "post",
+                                "path": "/v2/Mail"
+                            }
+                        },
+                        "Severity": {
+                            "runAfter": {
+                                "ThreatIntel": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "ApiConnection",
+                            "inputs": {
+                                "body": {
+                                    "query": "SecurityIncident\n| where LastActivityTime >= startofday(ago(1d)) and LastActivityTime < startofday(now())\n| summarize arg_max(TimeGenerated, *) by IncidentNumber\n| summarize count() by Severity",
+                                    "timerange": {
+                                        "relativeTimeRange": "Last 3 days"
+                                    },
+                                    "timerangetype": "2"
+                                },
+                                "host": {
+                                    "connection": {
+                                        "name": "@parameters('$connections')['azuremonitorlogs']['connectionId']"
+                                    }
+                                },
+                                "method": "post",
+                                "path": "/queryDataV2",
+                                "queries": {
+                                    "resourcegroups": "replacemewithresourcegroup",
+                                    "resourcename": "replacemewithsentinelname",
+                                    "resourcetype": "Log Analytics Workspace",
+                                    "subscriptions": "[subscription().subscriptionId]"
+                                }
+                            }
+                        },
+                        "ThreatIntel": {
+                            "runAfter": {
+                                "IncidentDetails": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "ApiConnection",
+                            "inputs": {
+                                "body": {
+                                    "query": "ThreatIntelligenceIndicator\n| where TimeGenerated >= startofday(ago(1d)) and TimeGenerated < startofday(now())\n| summarize count() by SourceSystem",
+                                    "timerangetype": "3"
+                                },
+                                "host": {
+                                    "connection": {
+                                        "name": "@parameters('$connections')['azuremonitorlogs']['connectionId']"
+                                    }
+                                },
+                                "method": "post",
+                                "path": "/queryDataV2",
+                                "queries": {
+                                    "resourcegroups": "replacemewithresourcegroup",
+                                    "resourcename": "replacemewithsentinelname",
+                                    "resourcetype": "Log Analytics Workspace",
+                                    "subscriptions": "[subscription().subscriptionId]"
+                                }
+                            }
+                        },
+                        "UsageBySource": {
+                            "runAfter": {
+                                "Provider": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "ApiConnection",
+                            "inputs": {
+                                "body": {
+                                    "query": "Usage \n| where TimeGenerated > ago(2d)\n| where StartTime >= startofday(ago(1d)) and EndTime < startofday(now())\n| where IsBillable == true\n| summarize BillableDataGB = round(sum(Quantity) / 1000, 2) by Solution, DataType\n| sort by BillableDataGB desc, DataType asc",
+                                    "timerangetype": "3"
+                                },
+                                "host": {
+                                    "connection": {
+                                        "name": "@parameters('$connections')['azuremonitorlogs']['connectionId']"
+                                    }
+                                },
+                                "method": "post",
+                                "path": "/queryDataV2",
+                                "queries": {
+                                    "resourcegroups": "replacemewithresourcegroup",
+                                    "resourcename": "replacemewithsentinelname",
+                                    "resourcetype": "Log Analytics Workspace",
+                                    "subscriptions": "[subscription().subscriptionId]"
+                                }
+                            }
+                        },
+                        "UsageOverall": {
+                            "runAfter": {
+                                "UsageBySource": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "ApiConnection",
+                            "inputs": {
+                                "body": {
+                                    "query": "Usage \n| where TimeGenerated > ago(2d)\n| where StartTime >= startofday(ago(1d)) and EndTime < startofday(now())\n| where IsBillable == true\n| summarize round(BillableDataGB = sum(Quantity) / 1000,2)",
+                                    "timerangetype": "3"
+                                },
+                                "host": {
+                                    "connection": {
+                                        "name": "@parameters('$connections')['azuremonitorlogs']['connectionId']"
+                                    }
+                                },
+                                "method": "post",
+                                "path": "/queryDataV2",
+                                "queries": {
+                                    "resourcegroups": "replacemewithresourcegroup",
+                                    "resourcename": "replacemewithsentinelname",
+                                    "resourcetype": "Log Analytics Workspace",
+                                    "subscriptions": "[subscription().subscriptionId]"
+                                }
+                            }
+                        }
+                    },
+                    "outputs": {}
+                },
+                "parameters": {
+                    "$connections": {
+                        "value": {
+                            "azuremonitorlogs": {
+                                "connectionId": "[parameters('connections_azuremonitorlogs_1_externalid')]",
+                                "connectionName": "azuremonitorlogs-1",
+                                "id": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Web/locations/eastus/managedApis/azuremonitorlogs')]"
+                            },
+                            "office365_1": {
+                                "connectionId": "[parameters('connections_office365_1_externalid')]",
+                                "connectionName": "office365-1",
+                                "id": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Web/locations/eastus/managedApis/office365')]"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    ]
+}

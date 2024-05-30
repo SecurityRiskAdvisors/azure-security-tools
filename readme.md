@@ -10,6 +10,7 @@ Each individual collection of work and tools will have its own folder dedicated 
 * Sentinel Case File Storage - A collection of logic apps that automatically carves out a file storage folder for every new sentinel incident to act as a file storage repository.  It also posts a link in the incident activity when its created and updates the incident whenever files are added.
 * Epic Ingestion Tools - Tools for ingesting and parsing Epic logs into Azure Sentinel, including ingestion time transformation rules, analytics, and workbooks.
 * Copilot for Security Plugin - Various plugins for extending the functionality of Copilot for Security to include and analyze additional datasets.
+* Daily SOC Summary with AI - A logic app that utilizes Azure Sentinel and Azure OpenAI GPT4o for generating daily emails summarizing all activities within the SOC.
 <br>
 <br>
 ## Contact
