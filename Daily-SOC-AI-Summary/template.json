@@ -6,11 +6,11 @@
             "defaultValue": "SOC-Daily-Summary-AI",
             "type": "String"
         },
-        "connections_azuremonitorlogs_2_externalid": {
+        "connections_azuremonitorlogs_1_externalid": {
             "defaultValue": "[concat('/subscriptions/', subscription().subscriptionId, '/resourceGroups/, 'replacemewithresourcegroup', '/providers/Microsoft.Web/connections/azuremonitorlogs-1')]",
             "type": "String"
         },
-        "connections_office365_7_externalid": {
+        "connections_office365_1_externalid": {
             "defaultValue": "[concat('/subscriptions/', subscription().subscriptionId, '/resourceGroups/', 'replacemewithresourcegroup', '/providers/Microsoft.Web/connections/office365-1')]",
             "type": "String"
         }
