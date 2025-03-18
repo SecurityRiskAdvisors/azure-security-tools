@@ -1,0 +1,211 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "workflows_ground_control_ai_name": {
+            "defaultValue": "ground-control-ai",
+            "type": "String"
+        },
+        "connections_securitycopilot_externalid": {
+            "defaultValue": "/subscriptions/your-subscription-id/resourceGroups/your-resource-group-name/providers/Microsoft.Web/connections/securitycopilot",
+            "type": "String"
+        },
+        "connections_teams_1_externalid": {
+            "defaultValue": "/subscriptions/your-subscription-id/resourceGroups/your-resource-group-name/providers/Microsoft.Web/connections/teams-1",
+            "type": "String"
+        }
+    },
+    "variables": {},
+    "resources": [
+        {
+            "type": "Microsoft.Logic/workflows",
+            "apiVersion": "2017-07-01",
+            "name": "[parameters('workflows_ground_control_ai_name')]",
+            "location": "eastus",
+            "tags": {
+                "status": "legacy"
+            },
+            "properties": {
+                "state": "Enabled",
+                "definition": {
+                    "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+                    "contentVersion": "1.0.0.0",
+                    "parameters": {
+                        "$connections": {
+                            "defaultValue": {},
+                            "type": "Object"
+                        }
+                    },
+                    "triggers": {
+                        "When_a_HTTP_request_is_received": {
+                            "type": "Request",
+                            "kind": "Http",
+                            "inputs": {
+                                "method": "POST",
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "url": {
+                                            "type": "string"
+                                        },
+                                        "email": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "actions": {
+                        "Run_a_Security_Copilot_promptbook": {
+                            "runAfter": {
+                                "Post_message_in_a_chat_or_channel_4": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "ApiConnection",
+                            "inputs": {
+                                "host": {
+                                    "connection": {
+                                        "name": "@parameters('$connections')['securitycopilot']['connectionId']"
+                                    }
+                                },
+                                "method": "post",
+                                "body": {
+                                    "PromptbookId": "44684be5-12f3-48e3-8f10-c5111b0a3d8a",
+                                    "PromptbookInputs": {
+                                        "External_Article_URL": "@triggerBody()?['url']"
+                                    }
+                                },
+                                "path": "/run-promptbook"
+                            }
+                        },
+                        "For_each": {
+                            "foreach": "@body('Run_a_Security_Copilot_promptbook')?['evaluationResults']",
+                            "actions": {
+                                "Reply_with_a_message_in_a_channel_1": {
+                                    "type": "ApiConnection",
+                                    "inputs": {
+                                        "host": {
+                                            "connection": {
+                                                "name": "@parameters('$connections')['teams']['connectionId']"
+                                            }
+                                        },
+                                        "method": "post",
+                                        "body": {
+                                            "parentMessageId": "@body('Post_message_in_a_chat_or_channel_4')?['id']",
+                                            "recipient": {
+                                                "groupId": "replace-with-group-id",
+                                                "channelId": "replace-with-channel-id"
+                                            },
+                                            "messageBody": "<p class=\"editor-paragraph\">@{item()?['EvaluationResultContent']}</p>"
+                                        },
+                                        "path": "/v1.0/teams/conversation/replyWithMessage/poster/Flow bot/location/@{encodeURIComponent('Channel')}"
+                                    }
+                                }
+                            },
+                            "runAfter": {
+                                "Reply_with_a_message_in_a_channel": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "Foreach",
+                            "runtimeConfiguration": {
+                                "concurrency": {
+                                    "repetitions": 1
+                                }
+                            }
+                        },
+                        "Post_message_in_a_chat_or_channel_4": {
+                            "runAfter": {},
+                            "type": "ApiConnection",
+                            "inputs": {
+                                "host": {
+                                    "connection": {
+                                        "name": "@parameters('$connections')['teams']['connectionId']"
+                                    }
+                                },
+                                "method": "post",
+                                "body": {
+                                    "recipient": {
+                                        "groupId": "replace-with-group-id",
+                                        "channelId": "replace-with-channel-id"
+                                    },
+                                    "messageBody": "<p class=\"editor-paragraph\">Hello! I've received a request from @{triggerBody()?['email']} to conduct a threat hunt on @{triggerBody()?['url']}. I will post back here with my results shortly!</p>"
+                                },
+                                "path": "/beta/teams/conversation/message/poster/@{encodeURIComponent('Flow bot')}/location/@{encodeURIComponent('Channel')}"
+                            }
+                        },
+                        "Reply_with_a_message_in_a_channel": {
+                            "runAfter": {
+                                "Run_a_Security_Copilot_promptbook": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "ApiConnection",
+                            "inputs": {
+                                "host": {
+                                    "connection": {
+                                        "name": "@parameters('$connections')['teams']['connectionId']"
+                                    }
+                                },
+                                "method": "post",
+                                "body": {
+                                    "parentMessageId": "@body('Post_message_in_a_chat_or_channel_4')?['id']",
+                                    "recipient": {
+                                        "groupId": "replace-with-group-id",
+                                        "channelId": "replace-with-channel-id"
+                                    },
+                                    "messageBody": "<p class=\"editor-paragraph\">Back with an update on your threat hunt on @{triggerBody()?['url']}.<br>Here is what we found:</p>"
+                                },
+                                "path": "/v1.0/teams/conversation/replyWithMessage/poster/Flow bot/location/@{encodeURIComponent('Channel')}"
+                            }
+                        },
+                        "Reply_with_a_message_in_a_channel_2": {
+                            "runAfter": {
+                                "For_each": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "ApiConnection",
+                            "inputs": {
+                                "host": {
+                                    "connection": {
+                                        "name": "@parameters('$connections')['teams']['connectionId']"
+                                    }
+                                },
+                                "method": "post",
+                                "body": {
+                                    "parentMessageId": "@body('Post_message_in_a_chat_or_channel_4')?['id']",
+                                    "recipient": {
+                                       "groupId": "replace-with-group-id",
+                                       "channelId": "replace-with-channel-id"
+                                    },
+                                    "messageBody": "<p class=\"editor-paragraph\">Threat hunt is complete for intel source @{triggerBody()?['url']}</p><br><p class=\"editor-paragraph\"><a href=\"https://securitycopilot.microsoft.com/sessions/@{body('Run_a_Security_Copilot_promptbook')?['sessionId']}\" class=\"editor-link\">Click Here for Full Analysis within Security Copilot.</a></p>"
+                                },
+                                "path": "/v1.0/teams/conversation/replyWithMessage/poster/Flow bot/location/@{encodeURIComponent('Channel')}"
+                            }
+                        }
+                    },
+                    "outputs": {}
+                },
+                "parameters": {
+                    "$connections": {
+                        "value": {
+                            "securitycopilot": {
+                                "id": "/subscriptions/your-subscription-id/providers/Microsoft.Web/locations/eastus/managedApis/securitycopilot",
+                                "connectionId": "[parameters('connections_securitycopilot_externalid')]",
+                                "connectionName": "securitycopilot"
+                            },
+                            "teams": {
+                                "id": "/subscriptions/your-subscription-id/providers/Microsoft.Web/locations/eastus/managedApis/teams",
+                                "connectionId": "[parameters('connections_teams_1_externalid')]",
+                                "connectionName": "teams-1"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    ]
+}

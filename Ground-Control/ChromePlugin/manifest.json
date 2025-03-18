@@ -1,0 +1,12 @@
+{
+  "name": "GroundControl Threat Hunt for Security CoPilot",
+  "version": "0.1",
+  "manifest_version": 3,
+  "action": {
+      "default_popup": "popup.html",
+      "default_icon": "logo.png"
+  },
+  "description": "Sends current URL to Copilot for threat analysis in Azure Sentinel",
+  "host_permissions": ["<all_urls>"],
+  "permissions": ["activeTab", "scripting"]
+}

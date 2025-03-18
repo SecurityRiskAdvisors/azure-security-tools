@@ -1,0 +1,21 @@
+body {
+    text-align:center;
+    width:200px;
+    background-color: #333333;
+    color:white;
+}
+
+a {
+    color:white;
+}
+
+button {
+    width:75%;
+    color:#020381;
+    background-color: #ffce00;
+    border-width:0px;
+    border-radius:20px;
+    padding:5px;
+    font-weight: bold;
+    cursor:pointer;
+}
