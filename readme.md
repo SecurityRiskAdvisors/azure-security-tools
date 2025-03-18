@@ -1,21 +1,48 @@
 # Azure Security Tools
-<br>
+
 ## Overview
-This repository is shared a collection of useful security resources created by Security Risk Advisors to enhance capabilities within the Azure and Microsoft ecosystem.
-<br>
+This repository contains a collection of security resources created by **Security Risk Advisors** to enhance capabilities within the Azure and Microsoft ecosystem.
+
+---
+
 ## Structure
-Each individual collection of work and tools will have its own folder dedicated to it with a readme file
-<br>
+Each project or tool is organized into its own folder, complete with a dedicated README file for detailed information.
+
+---
+
 ## Projects
-* Sentinel Case File Storage - A collection of logic apps that automatically carves out a file storage folder for every new sentinel incident to act as a file storage repository.  It also posts a link in the incident activity when its created and updates the incident whenever files are added.
-* Epic Ingestion Tools - Tools for ingesting and parsing Epic logs into Azure Sentinel, including ingestion time transformation rules, analytics, and workbooks.
-* Copilot for Security Plugin - Various plugins for extending the functionality of Copilot for Security to include and analyze additional datasets.
-* Daily SOC Summary with AI - A logic app that utilizes Azure Sentinel and Azure OpenAI GPT4o for generating daily emails summarizing all activities within the SOC.
-<br>
-<br>
+### 1. **Sentinel Case File Storage**
+   - A collection of Logic Apps that:
+     - Automatically creates a file storage folder for every new Sentinel incident.
+     - Posts a link to the folder in the incident activity upon creation.
+     - Updates the incident whenever files are added to the folder.
+
+### 2. **Epic Ingestion Tools**
+   - Tools for ingesting and parsing Epic logs into Azure Sentinel, including:
+     - Ingestion time transformation rules.
+     - Analytics.
+     - Workbooks.
+
+### 3. **Copilot for Security Plugin**
+   - A set of plugins designed to extend the functionality of **Copilot for Security**, enabling it to:
+     - Include additional datasets.
+     - Analyze these datasets effectively.
+
+### 4. **Daily SOC Summary with AI**
+   - A Logic App that leverages:
+     - **Azure Sentinel** and **Azure OpenAI GPT-4** to generate daily emails summarizing all activities within the SOC.
+
+### 5. **GroundControl for Security Copilot**
+   - A Logic App and Chrome plugin that:
+     - Allows for direct integration of browser activities with Security Copilot.  Facilitates one click execution of threat hunting based on IOCs on a web page, execution by Security Copilot, and hunt team notification via Teams channel.
+
+---
+
 ## Contact
-Please contact mike.pinch@sra.io for any comments or questions
-https://sra.io
-https://scalr.sra.io
+For any comments or questions, please reach out to:
+
+- **Mike Pinch**: [mike.pinch@sra.io](mailto:mike.pinch@sra.io)  
+- **Website**: [Security Risk Advisors](https://sra.io)  
+- **SCALR Platform**: [SCALR by SRA](https://scalr.sra.io)  
 
 ---
