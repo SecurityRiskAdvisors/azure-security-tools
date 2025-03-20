@@ -1,0 +1,18 @@
+openapi: 3.0.0
+
+info:
+    title: Wingman
+    description: An API broker for using crowdstrike via security copilot.
+    version: "0.1"
+
+paths:
+    /:
+        get: 
+            operationId: HelloWingman
+            description: Tests for Hello Wingman Response
+            summary: Verifies Authentication is working 
+            responses:
+                200:
+                    description: Successful authentication. 
+                401:
+                    description: Unsuccessful authentication.
