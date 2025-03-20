@@ -2,6 +2,7 @@ Descriptor:
   Name: Wingman
   DisplayName: Wingman
   Description: Crowdstrike Falcon plugin for Security Copilot by Security Risk Advisors
+  Icon: https://raw.githubusercontent.com/SecurityRiskAdvisors/azure-security-tools/refs/heads/main/wingmanconfig/icon.png
   Settings:
     - Name: InstanceURL
       Label: Instance URL
@@ -21,5 +22,5 @@ Descriptor:
 SkillGroups:
   - Format: API
     Settings:
-      OpenApiSpecURL: https://example.com/openapi.json
+      OpenApiSpecURL: https://raw.githubusercontent.com/SecurityRiskAdvisors/azure-security-tools/refs/heads/main/wingmanconfig/openapi.yaml
       EndpointUrlSettingName: InstanceURL
