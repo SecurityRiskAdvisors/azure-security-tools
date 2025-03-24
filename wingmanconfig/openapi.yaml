@@ -6,13 +6,71 @@ info:
     version: "0.1"
 
 paths:
-    /:
-        get: 
-            operationId: HelloWingman
-            description: Tests for Hello Wingman Response
-            summary: Verifies Authentication is working 
+     /:
+        get:
+        summary: Home Endpoint
+        description: Returns a welcome message.
+        responses:
+            '200':
+            description: Successful response
+            content:
+                text/plain:
+                schema:
+                    type: string
+                    example: "Hello Wingman"
+        /incident_list:
+            post:
+            summary: Retrieve Incident List
+            description: Retrieves a list of incidents based on a specified history period.
+            requestBody:
+                required: true
+                content:
+                application/json:
+                    schema:
+                    type: object
+                    properties:
+                        history:
+                        type: integer
+                        description: Number of days to look back for incidents.
+                        example: 90
             responses:
-                200:
-                    description: Successful authentication. 
-                401:
-                    description: Unsuccessful authentication.
+                '200':
+                description: List of incidents retrieved successfully.
+                content:
+                    application/json:
+                    schema:
+                        type: array
+                        items:
+                        type: object
+                        description: Incident details.
+                '403':
+                description: Unauthorized access.
+        /incident_details:
+            post:
+            summary: Retrieve Incident Details
+            description: Retrieves details of specific incidents based on their IDs.
+            requestBody:
+                required: true
+                content:
+                application/json:
+                    schema:
+                    type: object
+                    properties:
+                        ids:
+                        type: array
+                        items:
+                            type: string
+                        description: List of incident IDs to retrieve details for.
+                        example: ["incident_id_1", "incident_id_2"]
+            responses:
+                '200':
+                description: Incident details retrieved successfully.
+                content:
+                    application/json:
+                    schema:
+                        type: array
+                        items:
+                        type: object
+                        description: Incident details.
+                '403':
+                description: Unauthorized access.
