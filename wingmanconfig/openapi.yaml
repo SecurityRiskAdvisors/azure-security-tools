@@ -57,11 +57,9 @@ paths:
                 type: object
                 properties:  # Moved 'properties' inside 'schema'
                   ids:
-                    type: array
-                    items:
-                      type: string
-                      description: List of incident IDs to retrieve details for.
-                      example: ["incident_id_123", "incident_id_234"]
+                    type: string
+                    description: comma separated list of incident ids
+                    example: "incident_id_123, incident_id_234"
         responses:
           '200':
             description: Incident details retrieved successfully.
