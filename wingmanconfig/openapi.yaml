@@ -18,7 +18,7 @@ paths:
                 schema:
                     type: string
                     example: "Hello Wingman"
-        /incident_list:
+     /incident_list:
             post:
             summary: Retrieve Incident List
             description: Retrieves a list of incidents based on a specified history period.
@@ -45,7 +45,7 @@ paths:
                         description: Incident details.
                 '403':
                 description: Unauthorized access.
-        /incident_details:
+     /incident_details:
             post:
             summary: Retrieve Incident Details
             description: Retrieves details of specific incidents based on their IDs.

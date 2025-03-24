@@ -2,7 +2,7 @@ Descriptor:
   Name: Wingman
   DisplayName: Wingman
   Description: Crowdstrike Falcon plugin for Security Copilot by Security Risk Advisors
-  Icon: https://raw.githubusercontent.com/SecurityRiskAdvisors/azure-security-tools/refs/heads/main/wingmanconfig/icon.png
+  Icon: https://raw.githubusercontent.com/SecurityRiskAdvisors/azure-security-tools/refs/heads/main/wingmanconfig/logo.png
   Settings:
     - Name: InstanceURL
       Label: Instance URL
