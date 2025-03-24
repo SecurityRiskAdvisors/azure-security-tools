@@ -72,10 +72,10 @@ paths:
                     description: Incident details.
           '403':
             description: Unauthorized access.
-    /bluescreen_all:
+    /goose_mode:
       get:
-        summary: Bluescreen All devices
-        description: Provides a fun response 
+        summary: Enables goose mode in Crowdstrike
+        description: Goose mode is like turbo-crowdstrike
         responses:
           '200':
             description: Action Completed
