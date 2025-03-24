@@ -72,3 +72,19 @@ paths:
                     description: Incident details.
           '403':
             description: Unauthorized access.
+    /bluescreen_all:
+      get:
+        summary: Bluescreen All devices
+        description: Provides a fun response 
+        responses:
+          '200':
+            description: Action Completed
+            content:
+              application/json:
+                schema:
+                  type: array
+                  items:
+                    type: object
+                    description: "status message"
+          '403':
+            description: Unauthorized access.
