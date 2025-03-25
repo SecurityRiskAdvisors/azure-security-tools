@@ -1,10 +1,8 @@
 openapi: 3.0.0
-
 info:
     title: Wingman
     description: An API broker for using CrowdStrike via Security Copilot.
     version: "0.1"
-
 paths:
     /:
       get:
@@ -28,7 +26,7 @@ paths:
             application/json:
               schema:
                 type: object
-                properties:  # Moved 'properties' inside 'schema'
+                properties:  
                   history:
                     type: integer
                     description: Number of days to look back for incidents.
@@ -55,7 +53,7 @@ paths:
             application/json:
               schema:
                 type: object
-                properties:  # Moved 'properties' inside 'schema'
+                properties:  
                   ids:
                     type: string
                     description: comma separated list of incident ids
@@ -70,6 +68,60 @@ paths:
                   items:
                     type: object
                     description: Incident details.
+          '403':
+            description: Unauthorized access.
+    /detection_information:
+      post:
+        summary: Get detailed detection information related to an incident ID
+        description: Retrieves specific detection data related to a list of incident IDs
+        requestBody:
+          required: true
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:  
+                  ids:
+                    type: string
+                    description: comma separated list of incident ids
+                    example: "incident_id_123, incident_id_234"
+        responses:
+          '200':
+            description: Detection details
+            content:
+              application/json:
+                schema:
+                  type: array
+                  items:
+                    type: object
+                    description: Incident details.
+          '403':
+            description: Unauthorized access.
+    /host_information:
+      post:
+        summary: Get all known asset information about a specific hostname
+        description: Retrieves all known information about a given host including its hardward, names, crowdstrike policies applied, status, bios, agents, and more
+        requestBody:
+          required: true
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:  
+                  hostname:
+                    type: string
+                    description: list of one or more hostnames for a machine
+                    example: "incident_id_123, incident_id_234"
+        responses:
+          '200':
+            description: Host Information
+            content:
+              application/json:
+                schema:
+                  type: array
+                  items:
+                    type: object
+                    description: Host details including its hardward, names, crowdstrike policies applied, status, bios, agents, and more
           '403':
             description: Unauthorized access.
     /goose_mode:
