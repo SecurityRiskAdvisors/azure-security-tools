@@ -70,10 +70,10 @@ paths:
                     description: Incident details.
           '403':
             description: Unauthorized access.
-    /detection_information:
+    /event_information:
       post:
-        summary: Get detailed detection information related to an incident ID
-        description: Retrieves specific detection data related to a list of incident IDs
+        summary: Get detailed event information related to an incident ID
+        description: Retrieves specific event telemetry data related to a list of incident IDs
         requestBody:
           required: true
           content:
@@ -87,14 +87,14 @@ paths:
                     example: "incident_id_123, incident_id_234"
         responses:
           '200':
-            description: Detection details
+            description: Event details
             content:
               application/json:
                 schema:
                   type: array
                   items:
                     type: object
-                    description: Incident details.
+                    description: Event telemetry details related to supplied incident ID
           '403':
             description: Unauthorized access.
     /host_information:
