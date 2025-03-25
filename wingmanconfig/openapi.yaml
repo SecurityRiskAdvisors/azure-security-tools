@@ -100,7 +100,7 @@ paths:
     /host_information:
       post:
         summary: Get all known asset information about a specific hostname
-        description: Retrieves all known information about a given host including its hardward, names, crowdstrike policies applied, status, bios, agents, and more
+        description: Retrieves all known information about a given host including its hardware, names, crowdstrike policies applied, status, bios, agents, and more
         requestBody:
           required: true
           content:
@@ -111,7 +111,7 @@ paths:
                   hostname:
                     type: string
                     description: list of one or more hostnames for a machine
-                    example: "incident_id_123, incident_id_234"
+                    example: "bbluth1, nbluth1"
         responses:
           '200':
             description: Host Information
@@ -121,7 +121,7 @@ paths:
                   type: array
                   items:
                     type: object
-                    description: Host details including its hardward, names, crowdstrike policies applied, status, bios, agents, and more
+                    description: Host details including its hardware, names, crowdstrike policies applied, status, bios, agents, and more
           '403':
             description: Unauthorized access.
     /goose_mode:
