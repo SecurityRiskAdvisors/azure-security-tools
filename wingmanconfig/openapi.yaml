@@ -127,7 +127,7 @@ paths:
     /action_on_host:
       post:
         summary: Take an action on a host
-        description: Within crowdstrike allows the following actions on a host - contain: This action contains the host, which stops any network communications to locations other than the CrowdStrike cloud and IPs specified in your containment policy detection_suppress: Supress detections for the host. detection_unsuppress: Allow detections for the host lift_containment: This action lifts containment on the host, which returns its network communications to normal hide_host: This action will delete a host. After the host is deleted, no new detections for that host will be reported via UI or APIs unhide_host: This action will restore a host. Detection reporting will resume after the host is restored
+        description: Within crowdstrike allows the following actions on a host - 'contain' This action contains the host, which stops any network communications to locations other than the CrowdStrike cloud and IPs specified in your containment policy 'detection_suppress' - Supress detections for the host. detection_unsuppress Allow detections for the host 'lift_containment' - This action lifts containment on the host, which returns its network communications to normal 'hide_host' - This action will delete a host. After the host is deleted, no new detections for that host will be reported via UI or APIs 'unhide_host' - This action will restore a host. Detection reporting will resume after the host is restored
         requestBody:
           required: true
           content:
@@ -141,7 +141,7 @@ paths:
                     example: "bbluth1, nbluth1"
                   action:
                     type: string
-                    description: must be one of the following in lowercase: contain, lift_containment, detection_suppress, detection_unsuppress, hide_host, unhide_host
+                    description: must be one of the following in lowercase - contain, lift_containment, detection_suppress, detection_unsuppress, hide_host, unhide_host
                     example: "contain"
         responses:
           '200':
