@@ -97,6 +97,33 @@ paths:
                     description: Detailed information based on security posture of given hosts
           '403':
             description: Unauthorized access.
+    /search_hosts:
+      post:
+        summary: Search for a list of hosts by hostname 
+        description: Retrieves host information and metadata based on a whole or partial hostname supplied.  You must supply the beginning of the hostname and will match rightward. 
+        requestBody:
+          required: true
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:  
+                  hostname:
+                    type: string
+                    description: Search term of the full hostname or a fragment starting at the beginning of the hostname.  performs a right match on the hostname so you can supply one or more characters to search for
+                    example: "bbluth"
+        responses:
+          '200':
+            description: Host Information
+            content:
+              application/json:
+                schema:
+                  type: array
+                  items:
+                    type: object
+                    description: Host details including its hardware, names, crowdstrike policies applied, status, bios, agents, and more
+          '403':
+            description: Unauthorized access.
     /host_information:
       post:
         summary: Get all known asset information about a specific hostname
