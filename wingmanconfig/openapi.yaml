@@ -83,8 +83,8 @@ paths:
                 properties:  
                   ids:
                     type: string
-                    description: comma separated list of incident ids
-                    example: "incident_id_123, incident_id_234"
+                    description: a single incident id
+                    example: "incident_id_123"
         responses:
           '200':
             description: Event details
