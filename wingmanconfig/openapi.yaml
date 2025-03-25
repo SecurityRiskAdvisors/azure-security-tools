@@ -70,10 +70,10 @@ paths:
                     description: Incident details.
           '403':
             description: Unauthorized access.
-    /event_information:
+    /trust_score:
       post:
-        summary: Get detailed event information related to an incident ID
-        description: Retrieves specific event telemetry data related to a list of incident IDs
+        summary: Get Trust Score Information for host(s)
+        description: Retrieves trust score information for individual assets
         requestBody:
           required: true
           content:
@@ -81,20 +81,20 @@ paths:
               schema:
                 type: object
                 properties:  
-                  ids:
+                  hostname:
                     type: string
-                    description: a single incident id
-                    example: "incident_id_123"
+                    description: list of one or more hostnames for a machine
+                    example: "bbluth1, nbluth1"
         responses:
           '200':
-            description: Event details
+            description: Host Information
             content:
               application/json:
                 schema:
                   type: array
                   items:
                     type: object
-                    description: Event telemetry details related to supplied incident ID
+                    description: Detailed information based on security posture of given hosts
           '403':
             description: Unauthorized access.
     /host_information:
