@@ -1,0 +1,46 @@
+openapi: 3.0.0
+info:
+    title: SaRA - an SRA SCALR SOC Agent
+    description: SOC agent for accessing SRA SCALR XDR Resources, vulnerability management, asset data, siem, data lake, purple teams, pen tests
+    version: "0.1"
+paths:
+    /chat:
+      post:
+        summary: Interact with SaRA Agent for XDR Resources, vulnerability management, asset data, siem, data lake, purple teams, pen tests
+        description: Used for all interactions with SaRA agent
+        requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                messages:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      role:
+                        type: string
+                        description: Role of the message sender (e.g., "user").
+                      content:
+                        type: string
+                        description: Content of the message.
+                  example:
+                    - role: "user"
+                      content: "Can you analyze incident 15623 in Sentinel? Summarize the incident and current status, and make recommendations about what other Sentinel tables and queries we might want to consider investigating to better understand if it's a true risk that should be escalated."
+        responses:
+        '200':
+          description: SaRA Response details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Detailed summary and recommendations from SaRA
+        '400':
+          description: Bad Request - Invalid input.
+        '500':
+          description: Internal Server Error - Unable to process the request.

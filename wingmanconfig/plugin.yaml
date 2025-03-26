@@ -10,7 +10,6 @@ Descriptor:
       HintText: "e.g. https://example.com"
       SettingType: String
       Required: true
-
   SupportedAuthTypes:
     - ApiKey
   Authorization:
@@ -18,7 +17,6 @@ Descriptor:
     Key: x-wingman-api-key
     Location: Header
     AuthScheme: ''
-
 SkillGroups:
   - Format: API
     Settings:
