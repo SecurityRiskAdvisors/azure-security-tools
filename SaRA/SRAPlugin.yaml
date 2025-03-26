@@ -15,23 +15,12 @@ paths:
             schema:
               type: object
               properties:
-                messages:
-                  type: array
-                  items:
-                    type: object
-                    properties:
-                      role:
-                        type: string
-                        description: Role of the message sender (e.g., "user").
-                      content:
-                        type: string
-                        description: Content of the message.
-                  example:
-                    - role: "user"
-                      content: "Can you analyze incident 15623 in Sentinel? Summarize the incident and current status, and make recommendations about what other Sentinel tables and queries we might want to consider investigating to better understand if it's a true risk that should be escalated."
+                prompt:
+                  type: string
+                  description: string containing prompt from agent
         responses:
         '200':
-          description: SaRA Response details
+          description: Successful response
           content:
             application/json:
               schema:
@@ -39,8 +28,8 @@ paths:
                 properties:
                   message:
                     type: string
-                    description: Detailed summary and recommendations from SaRA
+                    description: Detailed Answer to question
         '400':
-          description: Bad Request - Invalid input.
+          description: Bad Request
         '500':
-          description: Internal Server Error - Unable to process the request.
+          description: Internal Server Error
