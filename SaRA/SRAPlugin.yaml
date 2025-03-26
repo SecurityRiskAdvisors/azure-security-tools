@@ -12,11 +12,11 @@ paths:
           - name: mode
             in: query
             required: true
-            description: Mode for the API call, always set to "prompt".
+            description: Mode for the API call, always set to "plugin".
             schema:
               type: string
-              enum: [prompt]
-            default: prompt
+              enum: [plugin]
+            default: plugin
         requestBody:
           required: true
           content:
