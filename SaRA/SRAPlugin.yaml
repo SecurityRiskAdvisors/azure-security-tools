@@ -11,11 +11,12 @@ paths:
         parameters:
           - name: mode
             in: query
-            required: false
-            description: Mode for the API call, defaulting to "prompt".
+            required: true
+            description: Mode for the API call, always set to "prompt".
             schema:
               type: string
-              default: prompt
+              enum: [prompt]
+            default: prompt
         requestBody:
         required: true
         content:
