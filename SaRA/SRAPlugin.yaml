@@ -18,15 +18,15 @@ paths:
               enum: [prompt]
             default: prompt
         requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                prompt:
-                  type: string
-                  description: string containing prompt from agent
+          required: true
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  prompt:
+                    type: string
+                    description: string containing prompt from agent
         responses:
         '200':
           description: Successful response
