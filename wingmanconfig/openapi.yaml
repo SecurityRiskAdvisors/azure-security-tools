@@ -151,6 +151,36 @@ paths:
                     description: Host details including its hardware, names, crowdstrike policies applied, status, bios, agents, and more
           '403':
             description: Unauthorized access.
+    /system_health_check:
+      get:
+        summary: Retrieve Prevention Policy and Exclusion Information 
+        description: Retrieves a list of all prevention policies, as well as a gold template of the best possible policy. Each policy is scored for effectiveness. Exclusion information is also pulled with Folder exclusions being more dangerous.
+        requestBody:
+          required: false
+        responses:
+          '200':
+            description: List of all prevention policies and counts of exclusions.
+            content:
+              application/json:
+                schema:
+                  type: array
+                  items:
+                    type: object
+                    description: prevention policies.
+          '403':
+            description: Unauthorized access.
+        responses:
+          '200':
+            description: Host Information
+            content:
+              application/json:
+                schema:
+                  type: array
+                  items:
+                    type: object
+                    description: Host details including its hardware, names, crowdstrike policies applied, status, bios, agents, and more
+          '403':
+            description: Unauthorized access.
     /action_on_host:
       post:
         summary: Take an action on a host
