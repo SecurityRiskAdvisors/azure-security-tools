@@ -31,6 +31,28 @@ paths:
                     type: integer
                     description: Number of days to look back for incidents.
                     example: 90
+                  hostname:
+                    type: string
+                    description: A single hostname
+                    example: "Crowdstronk"
+                  status:
+                    type: integer
+                    description: The incident status as a number. 20 indicates New status, 25 indicates Reopened Status, 30 indicates in progress status, and 40 indicates closed status
+                    enum:
+                      - 20  # New
+                      - 25  # Reopened
+                      - 30  # In Progress
+                      - 40  # Closed
+                    example: 20
+                  description:
+                    type: string
+                    description: A search string to look for in incident descriptions
+                    example: "Privilege Escalation"
+                  user:
+                    type: string
+                    description: a search string based on the username associated with an incident
+                    example: "nbluth"
+                required: []
         responses:
           '200':
             description: List of incidents retrieved successfully.
