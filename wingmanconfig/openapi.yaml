@@ -52,7 +52,6 @@ paths:
                     type: string
                     description: a search string based on the username associated with an incident
                     example: "nbluth"
-                required: []
         responses:
           '200':
             description: List of incidents retrieved successfully.
@@ -173,6 +172,37 @@ paths:
                     description: Host details including its hardware, names, crowdstrike policies applied, status, bios, agents, and more
           '403':
             description: Unauthorized access.
+    /on_demand_scan:
+      post:
+        summary: Create, cancel, report on, or check the status of a CrowdStrike On Demand Scan.
+        description: If you need to run an on demand scan of a host, you need to give a hostname, and a scan will be created. If you need to cancel a scan, then you need to give the hostname and a scan_id to cancel a specific scan, otherwise if you provide just the hostname it will cancel all current scans associated with the host. Asking for a status and providing the hostname will give you the status of all scans for that host. If you need to know what malicious files were found on a host, you can ask for a on demand scan report and provide the hostname to get all files founds from all scans.
+        requestBody:
+          required: true
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:  
+                  hostname:
+                    type: string
+                    description: list of one hostname for a machine
+                    example: "bbluth1"
+                  action:
+                    type: string
+                    description: must be one of the following in lowercase - report, create, status, cancel
+                    example: "bbluth1"
+        responses:
+          '200':
+            description: On Deman Scan Response
+            content:
+              application/json:
+                schema:
+                  type: array
+                  items:
+                    type: object
+                    description: The response for the creation of a scan will give you the id, a scan_id and it's current state. The response for a status of an on demand scan will return every scan recorded for that host along with the number of files scanned, those quarantined, or malicious and the Status of each scan. The results for a cancel scan request will return the number of workstations effected, which will correspond to the number of scans that were cancelled, along with the specific scan_id in resources that was canceled. Lastly, the report response will give you the malicious files from each scan, including the filename, filepath, filehash and if it was quarantined for each file found to be malicious.
+          '403':
+            description: Unauthorized access.
     /system_health_check:
       get:
         summary: Retrieve Prevention Policy and Exclusion Information 
@@ -220,19 +250,62 @@ paths:
                     description: Status of host
           '403':
             description: Unauthorized access.
-    /goose_mode:
-      get:
-        summary: Enables goose mode in Crowdstrike
-        description: Goose mode is like turbo-crowdstrike
+    /block_ioc:
+      post:
+        summary: Perform a global block for an indicator of compromise
+        description: |-
+          Create a new IOC by providing a JSON object that includes these key/value pairs:
+
+          **type** (required): The type of the indicator. Valid values:
+
+          - sha256: A hex-encoded sha256 hash string. Length - min: 64, max: 64.
+
+          - md5: A hex-encoded md5 hash string. Length - min 32, max: 32.
+
+          - domain: A domain name. Length - min: 1, max: 200.
+
+          - ipv4: An IPv4 address. Must be a valid IP address.
+
+          - ipv6: An IPv6 address. Must be a valid IP address.
+        requestBody:
+          required: true
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:  
+                  description:
+                    type: string
+                    description: description of the indicator being blocked
+                    example: "Malicious IP address"
+                  comment:
+                    type: string
+                    description: comment from individual creating the block, such as why its being created.
+                    example: "this ioc was observed brute forcing logins"
+                  value:
+                    type: string
+                    description: value of the IOC indicator of compromise.  It must be a valid ipv4 or ipv4 address, or a sha256 file hash, an md5 file hash, or a domain like example.com
+                    example: "199.199.199.199"
+                  type:
+                    type: string
+                    description: what specific type of IOC this is.  It may be 
+                    enum:
+                      - ipv4  
+                      - ipv6  
+                      - sha256  
+                      - md5  
+                      - domain
+                    example: "ipv4"
+                  severity:
+                    type: string
+                    description: low, medium, high - if unsure use high or do not use
+                    enum:
+                      - high  
+                      - medium  
+                      - low  
+                    example: "high"
         responses:
           '200':
-            description: Action Completed
-            content:
-              application/json:
-                schema:
-                  type: array
-                  items:
-                    type: object
-                    description: "status message"
+            description: IOC Blocking success
           '403':
             description: Unauthorized access.
