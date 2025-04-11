@@ -2,12 +2,12 @@ openapi: 3.0.0
 info:
     title: Wingman
     description: An API broker for using CrowdStrike via Security Copilot.
-    version: "0.1"
+    version: 1.0.0
 paths:
-    /:
+    /Instructions:
       get:
-        summary: Home Endpoint
-        description: Returns a welcome message.
+        summary: Instructions
+        description: Use this to get examples on how to use Wingman
         responses:
           '200':
             description: Successful response
@@ -16,7 +16,7 @@ paths:
                 schema:
                     type: string
                     example: "Hello Wingman"
-    /incident_list:
+    /IncidentList:
       post:
         summary: Retrieve Incident List
         description: Retrieves a list of incidents based on a specified history period.
@@ -64,7 +64,7 @@ paths:
                     description: Incident details.
           '403':
             description: Unauthorized access.
-    /incident_details:
+    /IncidentDetails:
       post:
         summary: Retrieve Incident Details
         description: Retrieves details of specific incidents based on their IDs.
@@ -91,7 +91,7 @@ paths:
                     description: Incident details.
           '403':
             description: Unauthorized access.
-    /trust_score:
+    /TrustScore:
       post:
         summary: Get Trust Score Information for host(s)
         description: Retrieves trust score information for individual assets
@@ -118,7 +118,7 @@ paths:
                     description: Detailed information based on security posture of given hosts
           '403':
             description: Unauthorized access.
-    /search_hosts:
+    /SearchHosts:
       post:
         summary: Search for a list of hosts by hostname 
         description: Retrieves host information and metadata based on a whole or partial hostname supplied.  You must supply the beginning of the hostname and will match rightward. 
@@ -145,7 +145,7 @@ paths:
                     description: Host details including its hardware, names, crowdstrike policies applied, status, bios, agents, and more
           '403':
             description: Unauthorized access.
-    /host_information:
+    /HostInformation:
       post:
         summary: Get all known asset information about a specific hostname
         description: Retrieves all known information about a given host including its hardware, names, crowdstrike policies applied, status, bios, agents, and more
@@ -172,7 +172,7 @@ paths:
                     description: Host details including its hardware, names, crowdstrike policies applied, status, bios, agents, and more
           '403':
             description: Unauthorized access.
-    /on_demand_scan:
+    /OnDemandScan:
       post:
         summary: Create, cancel, report on, or check the status of a CrowdStrike On Demand Scan.
         description: If you need to run an on demand scan of a host, you need to give a hostname, and a scan will be created. If you need to cancel a scan, then you need to give the hostname and a scan_id to cancel a specific scan, otherwise if you provide just the hostname it will cancel all current scans associated with the host. Asking for a status and providing the hostname will give you the status of all scans for that host. If you need to know what malicious files were found on a host, you can ask for a on demand scan report and provide the hostname to get all files founds from all scans.
@@ -203,7 +203,7 @@ paths:
                     description: The response for the creation of a scan will give you the id, a scan_id and it's current state. The response for a status of an on demand scan will return every scan recorded for that host along with the number of files scanned, those quarantined, or malicious and the Status of each scan. The results for a cancel scan request will return the number of workstations effected, which will correspond to the number of scans that were cancelled, along with the specific scan_id in resources that was canceled. Lastly, the report response will give you the malicious files from each scan, including the filename, filepath, filehash and if it was quarantined for each file found to be malicious.
           '403':
             description: Unauthorized access.
-    /system_health_check:
+    /SystemHealthCheck:
       get:
         summary: Retrieve Prevention Policy and Exclusion Information 
         description: Retrieves a list of all prevention policies, as well as a gold template of the best possible policy. Each policy is scored for effectiveness. Exclusion information is also pulled with Folder exclusions being more dangerous.
@@ -219,7 +219,7 @@ paths:
                     description: prevention policies.
           '403':
             description: Unauthorized access.
-    /action_on_host:
+    /ActionOnHost:
       post:
         summary: Take an action on a host
         description: Within crowdstrike allows the following actions on a host - 'contain' This action contains the host, which stops any network communications to locations other than the CrowdStrike cloud and IPs specified in your containment policy 'detection_suppress' - Supress detections for the host. detection_unsuppress Allow detections for the host 'lift_containment' - This action lifts containment on the host, which returns its network communications to normal 'hide_host' - This action will delete a host. After the host is deleted, no new detections for that host will be reported via UI or APIs 'unhide_host' - This action will restore a host. Detection reporting will resume after the host is restored
@@ -250,7 +250,7 @@ paths:
                     description: Status of host
           '403':
             description: Unauthorized access.
-    /block_ioc:
+    /BlockIoc:
       post:
         summary: Perform a global block for an indicator of compromise
         description: |-
