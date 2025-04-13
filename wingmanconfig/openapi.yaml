@@ -187,6 +187,10 @@ paths:
                     type: string
                     description: the hostname of the machine
                     example: "GobsDevBox"
+                  host_group_id:
+                    type: string
+                    description: the group id for the host group you'd like to assign the host to
+                    example: "abc123fsdfsdjfksdfjsl"
         responses:
           '200':
             description: Successfully changed host group
