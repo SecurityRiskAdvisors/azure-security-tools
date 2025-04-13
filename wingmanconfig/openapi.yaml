@@ -172,6 +172,26 @@ paths:
                     description: Host details including its hardware, names, crowdstrike policies applied, status, bios, agents, and more
           '403':
             description: Unauthorized access.
+    /HostPolicyChange:
+      post:
+        summary: Change what hardening policies apply to a given host in crowdstrike
+        description: This endpoint allows you to change the security policy group assigned to a host to increase or decrease security.
+        requestBody:
+          required: true
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:  
+                  hostname:
+                    type: string
+                    description: the hostname of the machine
+                    example: "GobsDevBox"
+        responses:
+          '200':
+            description: Successfully changed host group
+          '403':
+            description: Failed to change host group.
     /OnDemandScan:
       post:
         summary: Create, cancel, report on, or check the status of a CrowdStrike On Demand Scan.
