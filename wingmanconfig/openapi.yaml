@@ -174,7 +174,7 @@ paths:
             description: Unauthorized access.
     /HostPolicyChange:
       post:
-        summary: Change what hardening policies apply to a given host in crowdstrike
+        summary: Change what hardening policies apply to a given host in crowdstrike.  This will remove the host from all groups and then reassign the host to the requested group.
         description: This endpoint allows you to change the security policy group assigned to a host to increase or decrease security.
         requestBody:
           required: true
