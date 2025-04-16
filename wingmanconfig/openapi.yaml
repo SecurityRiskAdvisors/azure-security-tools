@@ -1,13 +1,13 @@
 openapi: 3.0.0
 info:
-    title: Wingman
+    title: CrowPilot
     description: An API broker for using CrowdStrike via Security Copilot.
     version: 1.0.0
 paths:
     /Instructions:
       get:
         summary: Instructions
-        description: Use this to get examples on how to use Wingman
+        description: Use this to get examples on how to use CrowPilot
         responses:
           '200':
             description: Successful response
@@ -15,7 +15,7 @@ paths:
               text/plain:
                 schema:
                     type: string
-                    example: "Hello Wingman"
+                    example: "Hello CrowPilot"
     /IncidentList:
       post:
         summary: Retrieve Incident List
@@ -172,30 +172,6 @@ paths:
                     description: Host details including its hardware, names, crowdstrike policies applied, status, bios, agents, and more
           '403':
             description: Unauthorized access.
-    /HostPolicyChange:
-      post:
-        summary: Change what hardening policies apply to a given host in crowdstrike.  This will remove the host from all groups and then reassign the host to the requested group.
-        description: This endpoint allows you to change the security policy group assigned to a host to increase or decrease security.
-        requestBody:
-          required: true
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:  
-                  hostname:
-                    type: string
-                    description: the hostname of the machine
-                    example: "GobsDevBox"
-                  host_group_id:
-                    type: string
-                    description: the group id for the host group you'd like to assign the host to
-                    example: "abc123fsdfsdjfksdfjsl"
-        responses:
-          '200':
-            description: Successfully changed host group
-          '403':
-            description: Failed to change host group.
     /OnDemandScan:
       post:
         summary: Create, cancel, report on, or check the status of a CrowdStrike On Demand Scan.
@@ -227,6 +203,30 @@ paths:
                     description: The response for the creation of a scan will give you the id, a scan_id and it's current state. The response for a status of an on demand scan will return every scan recorded for that host along with the number of files scanned, those quarantined, or malicious and the Status of each scan. The results for a cancel scan request will return the number of workstations effected, which will correspond to the number of scans that were cancelled, along with the specific scan_id in resources that was canceled. Lastly, the report response will give you the malicious files from each scan, including the filename, filepath, filehash and if it was quarantined for each file found to be malicious.
           '403':
             description: Unauthorized access.
+    /HostPolicyChange:
+      post:
+        summary: Change what hardening policies apply to a given host in crowdstrike.  This will remove the host from all groups and then reassign the host to the requested group.
+        description: This endpoint allows you to change the security policy group assigned to a host to increase or decrease security.
+        requestBody:
+          required: true
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:  
+                  hostname:
+                    type: string
+                    description: the hostname of the machine
+                    example: "GobsDevBox"
+                  hostgroup:
+                    type: string
+                    description: The name of the host group you'd like to assign the host to
+                    example: "Windows-Gold-Policy"
+        responses:
+          '200':
+            description: Successfully changed host group
+          '403':
+            description: Failed to change host group.
     /SystemHealthCheck:
       get:
         summary: Retrieve Prevention Policy and Exclusion Information 

@@ -1,6 +1,6 @@
 Descriptor:
-  Name: Wingman for Crowdstrike
-  DisplayName: Wingman for Crowdstrike by SRA
+  Name: CrowPilot for Crowdstrike
+  DisplayName: CrowPilot for Crowdstrike by SRA
   Description: Crowdstrike Falcon plugin for Security Copilot by Security Risk Advisors
   Icon: https://raw.githubusercontent.com/SecurityRiskAdvisors/azure-security-tools/refs/heads/main/wingmanconfig/logo.png
   Settings:
@@ -14,7 +14,7 @@ Descriptor:
     - ApiKey
   Authorization:
     Type: APIKey
-    Key: x-wingman-api-key
+    Key: x-crowpilot-api-key
     Location: Header
     AuthScheme: ''
 SkillGroups:
