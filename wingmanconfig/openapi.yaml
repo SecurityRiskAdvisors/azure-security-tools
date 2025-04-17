@@ -241,7 +241,10 @@ paths:
                   items:
                     type: object
                     description: >
-                      This object represents the configuration and status of security policies and exclusions applied to a system. It contains two main arrays: `exclusions` and `policies`.
+                      This object represents the configuration and status of security policies and exclusions applied to a system. It contains three main arrays: 'context_for_security_copilot', `exclusions` and `policies`.
+
+                      **context_for_security_copilot**:
+                      - A string that provides more details on what an assessment or health check response should include when responding to a user, and more information on scoring and what makes one policy better then another.
 
                       **Exclusions**:
                       - An array of objects detailing the count of exclusions applied globally and non-globally, scoped and folder-based.
