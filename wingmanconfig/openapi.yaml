@@ -230,17 +230,55 @@ paths:
     /SystemHealthCheck:
       get:
         summary: Retrieve Prevention Policy and Exclusion Information 
-        description: Retrieves a list of all prevention policies, as well as a gold template of the best possible policy. Each policy is scored for effectiveness. Exclusion information is also pulled with Folder exclusions being more dangerous.
+        description: Provides an assessment of the crowdstrike configuration based on prevention policies and exclusions. Prevention policy is a key configuration component that determines how aggressive CrowdStrike's defenses are. The assessment will detail the best prevention poilcies, the worst prevention policies and the overall crowdstrike health based on the number of policies that are poor or ideal, and the number of exclusions. For exclusions, Folder exclusions are not good, and Global Folder exclusions are even worse. For determining the rating of a prevention policy, the most ideal policies have all settings as either 'enabled' or 'Extra Aggressive', and the worst prevention policies consisting mostly of 'disabled' settings.
         responses:
           '200':
-            description: List of all prevention policies and counts of exclusions.
+            description: List of all prevention policies and counts of exclusions. AI should consider users initial request around summarizing results or making recommendations to improve.
             content:
               application/json:
                 schema:
                   type: array
                   items:
                     type: object
-                    description: prevention policies.
+                    description: >
+                      This object represents the configuration and status of security policies and exclusions applied to a system. It contains two main arrays: `exclusions` and `policies`.
+
+                      **Exclusions**:
+                      - An array of objects detailing the count of exclusions applied globally and non-globally, scoped and folder-based.
+                      - Example fields:
+                        - `Global - Folder`: Number of global folder exclusions.
+                        - `Global - Scoped`: Number of global scoped exclusions.
+                        - `Not Global - Folder`: Number of non-global folder exclusions.
+                        - `Not Global - Scoped`: Number of non-global scoped exclusions.
+                        - `Exclusion Count`: Total count of exclusions.
+
+                      **Policies**:
+                      - An array of objects representing various security policies applied to the system. Each policy object includes:
+                        - `Name`: The name of the policy.
+                        - `Host Count`: Number of hosts affected by the policy.
+                        - `Possible Points`: Maximum possible points for the policy.
+                        - `points`: Points scored by the policy.
+                        - `score`: Percentage score of the policy.
+                        - **Cloud Machine Learning**: Configuration for cloud-based machine learning features, such as anti-malware detection and prevention.
+                        - **Sensor Machine Learning**: Configuration for sensor-based machine learning features, such as adware detection and prevention.
+                        - **Enhanced Visibility**: Visibility settings for various protocols and system components (e.g., HTTP, memory, filesystem).
+                        - **Execution Blocking**: Settings for blocking suspicious processes, scripts, and commands.
+                        - **Exploit Mitigation**: Features to mitigate exploitation attempts (e.g., ASLR, DEP).
+                        - **Exploitation Behavior**: Detection of exploitation activities (e.g., code injection, drive-by downloads).
+                        - **Firmware**: Visibility into firmware-level activities.
+                        - **Quarantine**: Settings for quarantining malicious files or processes.
+                        - **Ransomware**: Protection against ransomware activities (e.g., file encryption, backup deletion).
+                        - **Remediation**: Advanced remediation capabilities.
+                        - **User-Mode Capabilities**: Features for user-mode protection (e.g., tampering protection, executable detection).
+
+                      Each policy object may also include specific configurations for Microsoft Office files, on-demand scans, lateral movement detection, and unauthorized remote access IOAs.
+
+                      Example:
+                      - A policy named `platform_default` may have `Cloud Machine Learning` features disabled, `points` set to 0, and `score` set to 0.0.
+                      - Another policy named `Win - Prod - Standard` may have aggressive settings for `Cloud Machine Learning`, `Sensor Machine Learning`, and `Ransomware` protection, with a high score and points.
+
+                      This structure allows for detailed tracking and management of security configurations across multiple systems.
+                      This description provides a clear and comprehensive overview of the JSON structure for use in an OpenAPI specification. Let me know if you need further refinements!
           '403':
             description: Unauthorized access.
     /ActionOnHost:
