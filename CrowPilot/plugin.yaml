@@ -1,0 +1,25 @@
+Descriptor:
+  Name: CrowPilot for Crowdstrike
+  DisplayName: CrowPilot for Crowdstrike by SRA
+  Description: Crowdstrike Falcon plugin for Security Copilot by Security Risk Advisors
+  Icon: https://raw.githubusercontent.com/SecurityRiskAdvisors/azure-security-tools/refs/heads/main/CrowPilot/logo.png
+  Settings:
+    - Name: InstanceURL
+      Label: CrowPilot URL
+      Description: The URL of the CrowPilot Azure App Service
+      HintText: "Go to your Azure App Service deployed from the marketplace.  On the top right of the Overview tab, copy your 'Default domain' value and include https://"
+      SettingType: String
+      Required: true
+  SupportedAuthTypes:
+    - ApiKey
+  Authorization:
+    Type: APIKey
+    Key: x-crowpilot-api-key
+    HintText: "This is the shared key you set up when your deploy the Azure App Service to secure communications between Security Copilot and CrowPilot"
+    Location: Header
+    AuthScheme: ''
+SkillGroups:
+  - Format: API
+    Settings:
+      OpenApiSpecURL: https://raw.githubusercontent.com/SecurityRiskAdvisors/azure-security-tools/refs/heads/main/CrowPilot/openapi.yaml
+      EndpointUrlSettingName: InstanceURL
