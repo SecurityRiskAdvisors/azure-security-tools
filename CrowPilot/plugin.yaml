@@ -15,7 +15,6 @@ Descriptor:
   Authorization:
     Type: APIKey
     Key: x-crowpilot-api-key
-    HintText: "This is the shared key you set up when your deploy the Azure App Service to secure communications between Security Copilot and CrowPilot"
     Location: Header
     AuthScheme: ''
 SkillGroups:
