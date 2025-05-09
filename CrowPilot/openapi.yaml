@@ -374,3 +374,28 @@ paths:
             description: IOC Blocking success
           '403':
             description: Unauthorized access.
+    /UnblockIoc:
+      post:
+        summary: Remove a block (unblock) an indicator of compromise (IOC)
+        description: |-
+          Remove an IOC by providing the value of the IOC and a comment for why it's being removed
+        requestBody:
+          required: true
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:  
+                  comment:
+                    type: string
+                    description: comment from individual creating the block, such as why its being created.
+                    example: "this ioc was observed brute forcing logins"
+                  value:
+                    type: string
+                    description: value of the IOC indicator of compromise.  It must be a valid ipv4 or ipv4 address, or a sha256 file hash, an md5 file hash, or a domain like example.com
+                    example: "199.199.199.199"
+        responses:
+          '200':
+            description: IOC Unblocking success
+          '403':
+            description: Unauthorized access.
