@@ -412,7 +412,7 @@ paths:
                 properties:  
                   prevention_policy:
                     type: string
-                    description: the prevention policy name to look up host groups for
+                    description: the prevention policy name to look up host groups for. If the prevention policy contains a space, the prevention_policy passed in will be truncated and only the characters before the space will be used, as there is a bug in CrowdStrikes API that doesnt allow for a space to be used in the search.
                     example: "My Policy - Test"
         responses:
           '200':
@@ -424,4 +424,4 @@ paths:
                   items:
                     type: object
                     description: an array of host_groups and any errors are returned. The host_groups array consists of objects that are the host group name and the platform name the host group is for.
-                    example: "{'host_groups':[{'name':'Test Group 1', 'platform_name':'Windows'},{'name':'Windows Prod Servers','platform_name':'Windows'},'errors':''}"
+                    example: "{'host_groups':[{'name':'Test Group 1', 'platform_name':'Windows','policy_name':'Windows Test Policy'},{'name':'Windows Prod Servers','platform_name':'Windows','policy_name':'Windows Prod Policy'},'errors':'','search_term':'Windows','copilot_instructions':'If the prevention_policy sent into CrowPilot had a space in it, the first word was grabbed and used as the search term, as CrowdStrike has a bug in their API that will not find an exact match of a prevention policy that has a space.'}"
