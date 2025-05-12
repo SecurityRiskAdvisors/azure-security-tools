@@ -375,7 +375,7 @@ paths:
           '403':
             description: Unauthorized access.
     /UnblockIoc:
-      post:
+      delete:
         summary: Remove a block (unblock) an indicator of compromise (IOC)
         description: |-
           Remove an IOC by providing the value of the IOC and a comment for why it's being removed
