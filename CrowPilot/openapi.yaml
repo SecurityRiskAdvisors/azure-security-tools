@@ -399,3 +399,29 @@ paths:
             description: IOC Unblocking success
           '403':
             description: Unauthorized access.
+    /PreventionPolicyGroups:
+      post:
+        summary: Get a list of the host group and it's associated platform name that are not dynamic groups, that a prevention policy applies to.
+        description: This endpoint uses a prevention policy name and will find all the host groups that a user can move a host into. This will not return dynamic host groups only static host groups.
+        requestBody:
+          required: true
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:  
+                  prevention_policy:
+                    type: string
+                    description: the prevention policy name to look up host groups for
+                    example: "My Policy - Test"
+        responses:
+          '200':
+            description: Successfully looked up a list of host groups
+            content:
+              application/json:
+                schema:
+                  type: array
+                  items:
+                    type: object
+                    description: an array of host_groups and any errors are returned. The host_groups array consists of objects that are the host group name and the platform name the host group is for.
+                    example: "{'host_groups':[{'name':'Test Group 1', 'platform_name':'Windows'},{'name':'Windows Prod Servers','platform_name':'Windows'},'errors':''}"
