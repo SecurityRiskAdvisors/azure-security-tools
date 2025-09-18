@@ -6,6 +6,7 @@ info:
 paths:
     /Instructions:
       get:
+        operationId: GetInstructions
         summary: Instructions
         description: Use this to get examples on how to use CrowPilot
         responses:
@@ -18,6 +19,7 @@ paths:
                     example: "Hello CrowPilot"
     /IncidentList:
       post:
+        operationId: GetIncidentList
         summary: Retrieve Incident List
         description: Retrieves a list of incidents based on a specified history period.
         requestBody:
@@ -66,6 +68,7 @@ paths:
             description: Unauthorized access.
     /IncidentDetails:
       post:
+        operationId: GetIncidentDetails
         summary: Retrieve Incident Details
         description: Retrieves details of specific incidents based on their IDs.
         requestBody:
@@ -93,6 +96,7 @@ paths:
             description: Unauthorized access.
     /TrustScore:
       post:
+        operationId: GetTrustScore
         summary: Get Trust Score Information for host(s)
         description: Retrieves trust score information for individual assets
         requestBody:
@@ -120,6 +124,7 @@ paths:
             description: Unauthorized access.
     /SearchHosts:
       post:
+        operationId: GetHostByHostname
         summary: Search for a list of hosts by hostname 
         description: Retrieves host information and metadata based on a whole or partial hostname supplied.  You must supply the beginning of the hostname and will match rightward. 
         requestBody:
@@ -147,6 +152,7 @@ paths:
             description: Unauthorized access.
     /HostInformation:
       post:
+        operationId: GetHostInformation
         summary: Get all known asset information about a specific hostname
         description: Retrieves all known information about a given host including its hardware, names, crowdstrike policies applied, status, bios, agents, and more
         requestBody:
@@ -174,6 +180,7 @@ paths:
             description: Unauthorized access.
     /OnDemandScan:
       post:
+        operationId: PostOnDemandScan
         summary: Create, cancel, report on, or check the status of a CrowdStrike On Demand Scan.
         description: If you need to run an on demand scan of a host, you need to give a hostname, and a scan will be created. If you need to cancel a scan, then you need to give the hostname and a scan_id to cancel a specific scan, otherwise if you provide just the hostname it will cancel all current scans associated with the host. Asking for a status and providing the hostname will give you the status of all scans for that host. If you need to know what malicious files were found on a host, you can ask for a on demand scan report and provide the hostname to get all files founds from all scans.
         requestBody:
@@ -205,6 +212,7 @@ paths:
             description: Unauthorized access.
     /HostPolicyChange:
       post:
+        operationId: ChangeHostPolicy
         summary: Change what hardening policies apply to a given host in crowdstrike.  This will remove the host from all groups and then reassign the host to the requested group.
         description: This endpoint allows you to change the security policy group assigned to a host to increase or decrease security.
         requestBody:
@@ -229,6 +237,7 @@ paths:
             description: Failed to change host group.
     /SystemHealthCheck:
       get:
+        operationId: RunSystemHealthCheck
         summary: Retrieve Prevention Policy and Exclusion Information 
         description: Provides an assessment of the crowdstrike configuration based on prevention policies and exclusions. Prevention policy is a key configuration component that determines how aggressive CrowdStrike's defenses are. The assessment will detail the best prevention poilcies, the worst prevention policies and the overall crowdstrike health based on the number of policies that are poor or ideal, and the number of exclusions. For exclusions, Folder exclusions are not good, and Global Folder exclusions are even worse. For determining the rating of a prevention policy, the most ideal policies have all settings as either 'enabled' or 'Extra Aggressive', and the worst prevention policies consisting mostly of 'disabled' settings.
         responses:
@@ -286,6 +295,7 @@ paths:
             description: Unauthorized access.
     /ActionOnHost:
       post:
+        operationId: PerformActionOnHost
         summary: Take an action on a host
         description: Within crowdstrike allows the following actions on a host - 'contain' This action contains the host, which stops any network communications to locations other than the CrowdStrike cloud and IPs specified in your containment policy 'detection_suppress' - Supress detections for the host. detection_unsuppress Allow detections for the host 'lift_containment' - This action lifts containment on the host, which returns its network communications to normal 'hide_host' - This action will delete a host. After the host is deleted, no new detections for that host will be reported via UI or APIs 'unhide_host' - This action will restore a host. Detection reporting will resume after the host is restored
         requestBody:
@@ -317,6 +327,7 @@ paths:
             description: Unauthorized access.
     /BlockIoc:
       post:
+        operationId: BlockIoc
         summary: Perform a global block for an indicator of compromise
         description: |-
           Create a new IOC by providing a JSON object that includes these key/value pairs:
@@ -376,6 +387,7 @@ paths:
             description: Unauthorized access.
     /UnblockIoc:
       delete:
+        operationId: UnblockIoc
         summary: Remove a block (unblock) an indicator of compromise (IOC)
         description: |-
           Remove an IOC by providing the value of the IOC and a comment for why it's being removed
@@ -401,6 +413,7 @@ paths:
             description: Unauthorized access.
     /PreventionPolicyGroups:
       post:
+        operationId: GetPreventionPolicyGroups
         summary: Get a list of the host group and it's associated platform name that are not dynamic groups, that a prevention policy applies to.
         description: This endpoint uses a prevention policy name and will find all the host groups that a user can move a host into. This will not return dynamic host groups only static host groups.
         requestBody:
