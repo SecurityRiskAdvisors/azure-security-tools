@@ -1,6 +1,6 @@
 # 🛡️ Daily SOC Summary Logic App (ARM Template)
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/REPLACE_WITH_RAW_TEMPLATE_URL)
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FSecurityRiskAdvisors%2Fazure-security-tools%2Frefs%2Fheads%2Fmain%2FDaily-SOC-AI-Summary%2Fdaily_soc_summary_template.json)
 
 An Azure ARM template that deploys a **Logic App** and supporting **API connections** to generate a **daily Security Operations Center (SOC) summary email** using **Microsoft Sentinel data** and **Microsoft Security Copilot**.
 
