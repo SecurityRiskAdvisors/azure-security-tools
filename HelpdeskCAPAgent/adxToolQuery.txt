@@ -1,0 +1,6 @@
+declare query_parameters (user:string);
+SigninLogs
+| where ResultType != 0
+| where UserPrincipalName == user
+| order by TimeGenerated
+| take 3
